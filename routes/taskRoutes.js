@@ -15,7 +15,7 @@ router.use(checkAuth);
  *     - Task
  *     summary: Create a task
  *     security:
- *      - basicAuth: []
+ *      - bearerAuth: []
  *     requestBody:
  *      required: true
  *      content:
@@ -43,7 +43,7 @@ router.post('/task', taskController.createTask);
  *     - Task
  *     summary: Get user tasks
  *     security:
- *       - basicAuth: []
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Success

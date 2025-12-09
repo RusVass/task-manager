@@ -1,6 +1,6 @@
 # Task Manager API
 
-Простий REST API для задач на Express + MongoDB з базовою авторизацією та Swagger UI.
+Простий REST API для задач на Express + MongoDB з JWT авторизацією та Swagger UI.
 
 ## Стек
 - Node.js, Express
@@ -17,6 +17,7 @@ npm install
 ```
 MONGODB_URI="your-mongodb-uri"
 PORT=3000
+JWT_SECRET="your-jwt-secret"
 ```
 3) Старт:
 ```
@@ -26,18 +27,19 @@ npm run dev
 ## Маршрути
 Базовий URL: `http://localhost:3000` (або порт з `.env`).
 
-### Auth (без Basic)
+### Auth (JWT)
 - `POST /api/auth/register` — body: `{"username","email","password","role"}`.
 - `POST /api/auth/login` — body: `{"email","password"}`.
+Обидва повертають `token` (JWT, живе 1 день). Використовуй його в `Authorization: Bearer <token>`.
 
-### Tasks (потрібен Basic Auth)
-Заголовок: `Authorization: Basic <base64(email:password)>`.
+### Tasks (потрібен Bearer Token)
+Заголовок: `Authorization: Bearer <token>`.
 - `POST /api/task` — створити задачу; body: `{"description": "..."}`.
 - `GET /api/task` — задачі поточного користувача.
 - `GET /api/task/all` — усі задачі (роль admin).
-- `GET /api/task/:id` — отримати задачу.
+- `GET /api/task/:id` — отримати задачу (тільки свою).
 - `PUT /api/task/:id` — оновити; body: `{"description": "...", "completed": true|false}`.
-- `DELETE /api/task/:id` — видалити.
+- `DELETE /api/task/:id` — видалити (тільки свою).
 
 ### Документація
 - Swagger UI: `GET /api/docs`.

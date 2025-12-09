@@ -3,18 +3,20 @@ import mongoose from 'mongoose';
 const taskSchema = mongoose.Schema({
     description: {
         type: String,
-        require: true,
+        required: true,
+        trim: true,
     },
     completed: {
         type: Boolean,
         default: false,
     },
     createBy: {
-       type: mongoose.Schema.Types.ObjectId,
-       ref: 'User',
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
     },
 });
 
-const User = mongoose.model('Task', taskSchema);
+const Task = mongoose.model('Task', taskSchema);
 
-export default User;
+export default Task;

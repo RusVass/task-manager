@@ -1,45 +1,25 @@
-import bcrypt from 'bcrypt';
-import User from '../models/userModel.js';
+import jwt from 'jsonwebtoken';
 
 export default async (req, res, next) => {
-    // check for basic auth header
+    try {
+        const authHeader = req.headers.authorization;
 
-    if (
-        !req.headers.authorization ||
-        req.headers.authorization?.indexOf('Basic') === -1
-    ) {
-        return res
-            .status(401)
-            .json({ message: 'Invalid authorization header' });
+        if (!authHeader?.startsWith('Bearer ')) {
+            return res.status(401).json({ message: 'Authorization required' });
+        }
+
+        const token = authHeader.split(' ')[1];
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        req.user = decoded;
+
+        return next();
+    } catch (err) {
+        if (err.name === 'TokenExpiredError') {
+            return res.status(401).json({ message: 'Token expired' });
+        }
+
+        return res.status(401).json({ message: 'Invalid token' });
     }
-
-    // verify basic auth
-    const base64Credentials = req.headers.authorization.split(' ')[1];
-
-    const credentials = Buffer.from(base64Credentials, 'base64').toString(
-        'ascii'
-    );
-
-    const [email, password] = credentials.split(':');
-
-    const user = await User.findOne({ email });
-
-    if (!user) {
-        return res.status(404).json({
-            message: 'User not found',
-        });
-    }
-
-    const isValid = await bcrypt.compare(password, user.password);
-
-    if (!isValid) {
-        return res.status(400).json({
-            message: 'Invalid password or email',
-        });
-    }
-
-    // attach user to request object
-    req.user = user._doc;
-
-    next();
 };

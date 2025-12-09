@@ -10,9 +10,10 @@ const options = {
         },
         components: {
             securitySchemes: {
-                basicAuth: {
+                bearerAuth: {
                     type: 'http',
-                    scheme: 'basic',
+                    scheme: 'bearer',
+                    bearerFormat: 'JWT',
                 },
             },
         },

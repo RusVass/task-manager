@@ -1,7 +1,10 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import swaggerUI from 'swagger-ui-express';
+import dotenv from 'dotenv';
 import './config/db.js';
+
+dotenv.config();
 
 // Routes
 import authRouter from './routes/authRoutes.js';
